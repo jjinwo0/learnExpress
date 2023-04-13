@@ -4,31 +4,28 @@ import { Cat, CatType } from "./app.model";
 const app: express.Express = express();
 const port = 8000;
 
+//* logging middleware
 app.use((req, res, next) => {
   console.log("this is logging middleware");
   next();
 });
 
-app.get("/cats/som", (req, res, next) => {
-  console.log("this is som middleware");
-  next();
-});
-
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send({ cats: Cat });
-});
-
-app.get(
-  "/cats/blue",
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(req.rawHeaders[1]);
-    res.send({ blue: Cat[0] });
+//* READ 전체 고양이 데이터 조회
+app.get("/cats", (req, res) => {
+  try {
+    const cats = Cat;
+    res.send({
+      success: true,
+      data: {
+        cats,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      error: console.error(),
+    });
   }
-);
-
-app.get("/cats/som", (req, res) => {
-  console.log(req.rawHeaders[1]);
-  res.send({ som: Cat[1] });
 });
 
 app.use((req, res, next) => {
